@@ -1,0 +1,95 @@
+model Course {
+  id String @id @default(uuid())
+
+  academyId String
+  academy   Academy @relation(fields: [academyId], references: [id], onDelete: Cascade)
+
+  instructorMemberId String
+  instructor         AcademyMember @relation(fields: [instructorMemberId], references: [id], onDelete: Restrict)
+
+  title String
+  slug  String @unique
+
+  shortDescription String?
+  description      String?
+
+  thumbnailFileId String?
+  thumbnail       File?   @relation("CourseThumbnail", fields: [thumbnailFileId], references: [id], onDelete: SetNull)
+
+  price Decimal @db.Decimal(10, 2)
+
+  status CourseStatus @default(DRAFT)
+
+  approvedByUserId String?
+  approvedBy       User?   @relation("CourseApprover", fields: [approvedByUserId], references: [id], onDelete: SetNull)
+
+  approvedAt DateTime?
+
+  categories CourseCategory[]
+
+  sections Section[]
+
+  enrollments Enrollment[]
+
+  reviews Review[]
+
+  wishlists Wishlist[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([academyId])
+  @@index([instructorMemberId])
+  @@index([thumbnailFileId])
+  @@index([approvedByUserId])
+}
+
+model Section {
+  id String @id @default(uuid())
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  title String
+
+  order Int
+
+  lessons Lesson[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([courseId, order])
+  @@index([courseId])
+}
+
+model Lesson {
+  id String @id @default(uuid())
+
+  sectionId String
+  section   Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  title String
+
+  description String?
+
+  order Int
+
+  isPreview Boolean @default(false)
+
+  media Media?
+
+  resources LessonResource[]
+
+  quiz Quiz?
+
+  assignment Assignment?
+
+  lessonProgresses LessonProgress[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([sectionId, order])
+  @@index([sectionId])
+}

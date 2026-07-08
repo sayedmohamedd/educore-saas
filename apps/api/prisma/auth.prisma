@@ -1,0 +1,64 @@
+model User {
+  id String @id @default(uuid())
+
+  email String @unique
+  passwordHash String
+
+  firstName String
+  lastName String
+
+  gender Gender
+  dateOfBirth DateTime
+
+  avatarFileId String?
+  avatar File? @relation("UserAvatar", fields: [avatarFileId], references: [id], onDelete: SetNull)
+
+  uploadedFiles File[] @relation("UploadedFiles")
+
+  isEmailVerified Boolean @default(false)
+
+  refreshTokens RefreshToken[]
+
+  academyMemberships AcademyMember[]
+
+  createdAcademies Academy[] @relation("AcademyCreator")
+  approvedAcademies Academy[] @relation("AcademyApprover")
+
+  approvedCourses Course[] @relation("CourseApprover")
+
+  createdCategories Category[] @relation("CategoryCreator")
+
+  enrollments Enrollment[]
+
+  notifications Notification[]
+
+  wishlists Wishlist[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([avatarFileId])
+}
+
+model RefreshToken {
+  id String @id @default(uuid())
+
+  tokenHash String @unique
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  device String?
+  browser String?
+  os String?
+  ipAddress String?
+
+  expiresAt DateTime
+  lastUsedAt DateTime?
+
+  revokedAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}

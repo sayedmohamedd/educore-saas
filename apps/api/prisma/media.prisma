@@ -1,0 +1,80 @@
+model File {
+  id String @id @default(uuid())
+
+  originalName String
+  mimeType String
+  extension String
+
+  size BigInt
+
+  storageProvider StorageProvider
+  storageKey String @unique
+
+  uploadedByUserId String
+  uploadedBy User @relation("UploadedFiles", fields: [uploadedByUserId], references: [id], onDelete: Restrict)
+
+  avatarUsers User[] @relation("UserAvatar")
+
+  academyLogos Academy[] @relation("AcademyLogo")
+
+  courseThumbnails Course[] @relation("CourseThumbnail")
+
+  media Media?
+
+  lessonResources LessonResource[]
+
+  assignmentSubmissionFiles AssignmentSubmissionFile[]
+
+  createdAt DateTime @default(now())
+
+  @@index([uploadedByUserId])
+}
+
+model Media {
+  id String @id @default(uuid())
+
+  fileId String @unique
+  file File @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  lessonId String @unique
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  duration Int?
+
+  status MediaProcessingStatus @default(UPLOADING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model LessonResource {
+  id String @id @default(uuid())
+
+  lessonId String
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  fileId String
+  file File @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([lessonId, fileId])
+  @@index([lessonId])
+  @@index([fileId])
+}
+
+model AssignmentSubmissionFile {
+  id String @id @default(uuid())
+
+  assignmentSubmissionId String
+  assignmentSubmission AssignmentSubmission @relation(fields: [assignmentSubmissionId], references: [id], onDelete: Cascade)
+
+  fileId String
+  file File @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([assignmentSubmissionId, fileId])
+  @@index([assignmentSubmissionId])
+  @@index([fileId])
+}

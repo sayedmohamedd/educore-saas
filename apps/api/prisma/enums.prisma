@@ -1,0 +1,126 @@
+// ======================================================
+// Auth
+// ======================================================
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+// ======================================================
+// Academy
+// ======================================================
+
+enum AcademyStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  REJECTED
+}
+
+enum AcademyRole {
+  OWNER
+  ADMIN
+  INSTRUCTOR
+  STUDENT
+}
+
+// ======================================================
+// Course
+// ======================================================
+
+enum CourseStatus {
+  DRAFT
+  PENDING_APPROVAL
+  PUBLISHED
+  ARCHIVED
+}
+
+// ======================================================
+// Media
+// ======================================================
+
+enum StorageProvider {
+  CLOUDINARY
+}
+
+enum MediaProcessingStatus {
+  UPLOADING
+  PROCESSING
+  READY
+  FAILED
+}
+
+// ======================================================
+// Learning
+// ======================================================
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  SUSPENDED
+  REFUNDED
+}
+
+enum LessonProgressStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+// ======================================================
+// Assessment
+// ======================================================
+
+enum QuestionType {
+  MULTIPLE_CHOICE
+  TRUE_FALSE
+}
+
+enum QuizAttemptStatus {
+  IN_PROGRESS
+  SUBMITTED
+  AUTO_SUBMITTED
+}
+
+enum AssignmentSubmissionStatus {
+  SUBMITTED
+  GRADED
+}
+
+// ======================================================
+// Engagement
+// ======================================================
+
+enum NotificationType {
+  COURSE_APPROVED
+  COURSE_REJECTED
+
+  COURSE_UPDATED
+  COURSE_PUBLISHED
+
+  ASSIGNMENT_GRADED
+
+  QUIZ_PASSED
+  QUIZ_FAILED
+
+  ENROLLMENT_CREATED
+
+  WALLET_RECHARGED
+
+  PAYMENT_SUCCESS
+  PAYMENT_FAILED
+
+  SYSTEM
+}
+
+// ======================================================
+// Wallet
+// ======================================================
+
+enum TransactionType {
+  DEPOSIT
+  PURCHASE
+  REFUND
+  ADJUSTMENT
+}
