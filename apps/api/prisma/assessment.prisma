@@ -1,0 +1,145 @@
+model Quiz {
+  id String @id @default(uuid())
+
+  lessonId String @unique
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  title String
+
+  questions Question[]
+  attempts QuizAttempt[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Question {
+  id String @id @default(uuid())
+
+  quizId String
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  question String
+
+  type QuestionType
+
+  order Int
+
+  choices Choice[]
+  answers QuizAnswer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([quizId, order])
+  @@index([quizId])
+}
+
+model Choice {
+  id String @id @default(uuid())
+
+  questionId String
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  text String
+
+  isCorrect Boolean
+
+  order Int
+
+  answers QuizAnswer[]
+
+  createdAt DateTime @default(now())
+
+  @@unique([questionId, order])
+  @@index([questionId])
+}
+
+model QuizAttempt {
+  id String @id @default(uuid())
+
+  quizId String
+  quiz Quiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+
+  enrollmentId String
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+  score Decimal @db.Decimal(5, 2)
+
+  status QuizAttemptStatus
+
+  answers QuizAnswer[]
+
+  startedAt DateTime @default(now())
+  submittedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([quizId])
+  @@index([enrollmentId])
+}
+
+model QuizAnswer {
+  id String @id @default(uuid())
+
+  quizAttemptId String
+  quizAttempt QuizAttempt @relation(fields: [quizAttemptId], references: [id], onDelete: Cascade)
+
+  questionId String
+  question Question @relation(fields: [questionId], references: [id], onDelete: Restrict)
+
+  choiceId String
+  choice Choice @relation(fields: [choiceId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  @@unique([quizAttemptId, questionId])
+  @@index([quizAttemptId])
+  @@index([questionId])
+  @@index([choiceId])
+}
+
+model Assignment {
+  id String @id @default(uuid())
+
+  lessonId String @unique
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  title String
+
+  description String
+
+  submissions AssignmentSubmission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AssignmentSubmission {
+  id String @id @default(uuid())
+
+  assignmentId String
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  enrollmentId String
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+  answer String?
+
+  files AssignmentSubmissionFile[]
+
+  grade Decimal? @db.Decimal(5, 2)
+
+  status AssignmentSubmissionStatus
+
+  submittedAt DateTime @default(now())
+  gradedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([assignmentId, enrollmentId])
+  @@index([assignmentId])
+  @@index([enrollmentId])
+}

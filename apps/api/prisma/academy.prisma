@@ -1,0 +1,57 @@
+model Academy {
+  id String @id @default(uuid())
+
+  name String
+  slug String @unique
+
+  logoFileId String?
+  logo File? @relation("AcademyLogo", fields: [logoFileId], references: [id], onDelete: SetNull)
+
+  description String?
+  phone String?
+
+  status AcademyStatus @default(PENDING)
+
+  createdByUserId String
+  createdBy User @relation("AcademyCreator", fields: [createdByUserId], references: [id], onDelete: Restrict)
+
+  approvedByUserId String?
+  approvedBy User? @relation("AcademyApprover", fields: [approvedByUserId], references: [id], onDelete: SetNull)
+
+  members AcademyMember[]
+  courses Course[]
+
+  wallet Wallet?
+
+  approvedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdByUserId])
+  @@index([approvedByUserId])
+  @@index([logoFileId])
+}
+
+model AcademyMember {
+  id String @id @default(uuid())
+
+  academyId String
+  academy Academy @relation(fields: [academyId], references: [id], onDelete: Cascade)
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  role AcademyRole
+
+  joinedAt DateTime @default(now())
+
+  courses Course[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([academyId, userId])
+  @@index([academyId])
+  @@index([userId])
+}

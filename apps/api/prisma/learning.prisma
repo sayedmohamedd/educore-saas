@@ -1,0 +1,52 @@
+model Enrollment {
+    id String @id @default(uuid())
+
+    courseId String
+    course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+    studentId String
+    student   User @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+    status EnrollmentStatus @default(ACTIVE)
+
+    lessonProgresses LessonProgress[]
+
+    quizAttempts QuizAttempt[]
+
+    assignmentSubmissions AssignmentSubmission[]
+
+    certificate Certificate?
+
+    review Review?
+
+    enrolledAt  DateTime  @default(now())
+    completedAt DateTime?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([courseId, studentId])
+    @@index([courseId])
+    @@index([studentId])
+}
+
+model LessonProgress {
+    id String @id @default(uuid())
+
+    enrollmentId String
+    enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+
+    lessonId String
+    lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+    status LessonProgressStatus @default(NOT_STARTED)
+
+    completedAt DateTime?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([enrollmentId, lessonId])
+    @@index([enrollmentId])
+    @@index([lessonId])
+}
